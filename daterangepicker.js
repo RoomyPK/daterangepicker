@@ -55,6 +55,7 @@
         this.autoUpdateInput = true;
         this.alwaysShowCalendars = false;
         this.ranges = {};
+        this.allowStartAndEndDatesToHaveSameDate = true;
 
         this.opens = 'right';
         if (this.element.hasClass('pull-right'))
@@ -362,6 +363,10 @@
 
         if (typeof cb === 'function') {
             this.callback = cb;
+        }
+        
+        if (typeof options.allowStartAndEndDatesToHaveSameDate === 'boolean') {
+            this.allowStartAndEndDatesToHaveSameDate = options.allowStartAndEndDatesToHaveSameDate;
         }
 
         if (!this.timePicker) {
@@ -1314,7 +1319,9 @@
             } else if (!this.endDate && date.isBefore(this.startDate)) {
                 //special case: clicking the same date for start/end,
                 //but the time of the end date is before the start date
-                this.setEndDate(this.startDate.clone());
+                if (this.allowStartAndEndDatesToHaveSameDate) {
+                    this.setEndDate(this.startDate.clone());
+                }
             } else { // picking end
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.right .hourselect').val(), 10);
@@ -1332,10 +1339,12 @@
                     var second = this.timePickerSeconds ? parseInt(this.container.find('.right .secondselect').val(), 10) : 0;
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
-                this.setEndDate(date.clone());
-                if (this.autoApply) {
-                  this.calculateChosenLabel();
-                  this.clickApply();
+                if (this.allowStartAndEndDatesToHaveSameDate || !date.isSame(this.startDate, 'day')) {
+                    this.setEndDate(date.clone());
+                    if (this.autoApply) {
+                        this.calculateChosenLabel();
+                        this.clickApply();
+                    }
                 }
             }
 
