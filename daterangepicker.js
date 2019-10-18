@@ -1017,13 +1017,19 @@
         },
 
         updateFormInputs: function() {
-
-            if (this.singleDatePicker || (this.endDate && (this.startDate.isBefore(this.endDate) || this.startDate.isSame(this.endDate)))) {
-                this.container.find('button.applyBtn').prop('disabled', false);
+            var disable = false;
+            if (this.singleDatePicker) {
+                disable = false;
+            } else if ((this.endDate && (this.startDate.isBefore(this.endDate) || this.startDate.isSame(this.endDate)))) {
+                if (!this.allowStartAndEndDatesToHaveSameDate && this.endDate.isSame(this.startDate, 'day')) {
+                    disable = true;
+                } else {
+                  disable = false;
+                }
             } else {
-                this.container.find('button.applyBtn').prop('disabled', true);
+                disable = true;
             }
-
+            this.container.find('button.applyBtn').prop('disabled', disable);
         },
 
         move: function() {
