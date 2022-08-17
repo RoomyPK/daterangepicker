@@ -795,6 +795,11 @@
                 }
             }
 
+            // console.log("### DateRangePicker.renderCalendar: minDate: ", this.minDate.format("YYYY-MM-DD"));
+            // console.log("### DateRangePicker.renderCalendar: maxDate: ", this.maxDate.format("YYYY-MM-DD"));
+            // console.log("### DateRangePicker.renderCalendar: startDate: ", this.startDate.format("YYYY-MM-DD"));
+            // console.log("### DateRangePicker.renderCalendar: endDate: ", this.endDate.format("YYYY-MM-DD"));
+
             for (var row = 0; row < 6; row++) {
                 html += '<tr>';
 
@@ -853,14 +858,20 @@
                             Array.prototype.push.apply(classes, isCustom);
                     }
 
-                    var cname = '', disabled = false;
+                    var cname = '', disabled = false, alreadyAdded = {};
                     for (var i = 0; i < classes.length; i++) {
+                        if (classes[i] in alreadyAdded) {
+                          continue;
+                        }
+                        alreadyAdded[classes[i]] = 1;
                         cname += classes[i] + ' ';
                         if (classes[i] == 'disabled')
                             disabled = true;
                     }
                     if (!disabled)
                         cname += 'available';
+
+                    // console.log("### DateRangePicker.renderCalendar: calendarDate: ", calendar[row][col].format("YYYY-MM-DD"), "; classes: ", cname);
 
                     html += '<td class="' + cname.replace(/^\s+|\s+$/g, '') + '" data-title="' + 'r' + row + 'c' + col + '">' + calendar[row][col].date() + '</td>';
 
