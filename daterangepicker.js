@@ -73,6 +73,7 @@
         this.locale = {
             direction: 'ltr',
             format: moment.localeData().longDateFormat('L'),
+            selectedDateDisplayFormat: '',
             separator: ' - ',
             applyLabel: 'Apply',
             cancelLabel: 'Cancel',
@@ -82,6 +83,8 @@
             monthNames: moment.monthsShort(),
             firstDay: moment.localeData().firstDayOfWeek()
         };
+
+        this.locale.selectedDateDisplayFormat = this.locale.format;
 
         this.callback = function() { };
 
@@ -132,6 +135,9 @@
 
             if (typeof options.locale.format === 'string')
                 this.locale.format = options.locale.format;
+
+            if (typeof options.locale.selectedDateDisplayFormat === 'string')
+                this.locale.selectedDateDisplayFormat = options.locale.selectedDateDisplayFormat;
 
             if (typeof options.locale.separator === 'string')
                 this.locale.separator = options.locale.separator;
@@ -515,7 +521,7 @@
 
             this.previousRightTime = this.endDate.clone();
 
-            this.container.find('.drp-selected').html(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format));
+            this.updateDisplayedSelectedDate();
 
             if (!this.isShowing)
                 this.updateElement();
@@ -531,6 +537,14 @@
             return false;
         },
 
+        updateDisplayedSelectedDate: function() {
+          var selectedDateDisplayFormat = this.locale.selectedDateDisplayFormat;
+          if (selectedDateDisplayFormat == null || selectedDateDisplayFormat == '') {
+            selectedDateDisplayFormat = this.locale.format;
+          }
+          this.container.find('.drp-selected').html(this.startDate.format(selectedDateDisplayFormat) + this.locale.separator + this.endDate.format(selectedDateDisplayFormat));
+        },
+
         updateView: function() {
             if (this.timePicker) {
                 this.renderTimePicker('left');
@@ -541,8 +555,9 @@
                     this.container.find('.right .calendar-time select').prop('disabled', false).removeClass('disabled');
                 }
             }
-            if (this.endDate)
-                this.container.find('.drp-selected').html(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format));
+            if (this.endDate) {
+                this.updateDisplayedSelectedDate();
+            }
             this.updateMonthsInView();
             this.updateCalendars();
             this.updateFormInputs();
