@@ -56,6 +56,7 @@
         this.alwaysShowCalendars = false;
         this.ranges = {};
         this.allowStartAndEndDatesToHaveSameDate = true;
+        this.startDateEnabled = true;
 
         this.opens = 'right';
         if (this.element.hasClass('pull-right'))
@@ -367,6 +368,10 @@
         
         if (typeof options.allowStartAndEndDatesToHaveSameDate === 'boolean') {
             this.allowStartAndEndDatesToHaveSameDate = options.allowStartAndEndDatesToHaveSameDate;
+        }
+
+        if (typeof options.startDateEnabled === 'boolean') {
+            this.startDateEnabled = options.startDateEnabled;
         }
 
         if (!this.timePicker) {
@@ -1303,7 +1308,7 @@
             // * if one of the inputs above the calendars was focused, cancel that manual input
             //
 
-            if (this.endDate || date.isBefore(this.startDate, 'day')) { //picking start
+            if ((this.endDate || date.isBefore(this.startDate, 'day')) && this.startDateEnabled) { //picking start
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.left .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
